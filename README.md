@@ -15,7 +15,8 @@ This ensures:
 ---
 
 ## 🏗️ Architecture Diagram
-![Architecture Diagram](architecture-diagram.png)
+<img width="1983" height="1360" alt="image" src="https://github.com/user-attachments/assets/31d1b145-2788-415c-b0e5-d4a3bafe6ef9" />
+
 
 ---
 
