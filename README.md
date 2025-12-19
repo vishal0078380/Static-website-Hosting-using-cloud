@@ -1,73 +1,147 @@
-# Static-website-Hosting-using-cloud
-Static Website Hosting using S3 and CloudFront
-📌 Project Overview
-This project demonstrates a production-ready method for hosting a high-performance, secure static website on AWS. Instead of using standard S3 public website hosting, this architecture leverages Amazon CloudFront for global content delivery and Origin Access Control (OAC) for enhanced security. This setup ensures low latency for users worldwide and protects the origin (S3) from unauthorized access.
+# Static Website Hosting using S3 and CloudFront
 
-🏗️ Architecture Diagram
-(Paste the Mermaid diagram image you generated earlier here)
+## 📌 Project Overview
+This project demonstrates a **production-ready AWS architecture** for hosting a **high-performance and secure static website**.
 
-🛠️ AWS Services Used
-Amazon S3: Used as the storage origin for static assets (HTML, CSS, JS, images).
+Instead of using standard **public S3 static website hosting**, this setup uses:
+- **Amazon CloudFront** for global content delivery
+- **Origin Access Control (OAC)** for secure private access to S3
 
-Amazon CloudFront: Used as the Content Delivery Network (CDN) to cache content at edge locations.
+This ensures:
+- 🌍 Low latency worldwide
+- 🔐 Strong security with zero public S3 access
+- ⚡ HTTPS by default
 
-AWS IAM (OAC): Implemented Origin Access Control to restrict S3 access only to CloudFront.
+---
 
-Amazon Route 53 (Optional): Used for DNS management and custom domain mapping.
+## 🏗️ Architecture Diagram
+![Architecture Diagram](architecture-diagram.png)
 
-AWS Certificate Manager (Optional): Used to provide SSL/TLS certificates for HTTPS.
+---
 
-🔒 Security Implementation
-The core of this project is the "Least Privilege" security model:
+## 🛠️ AWS Services Used
 
-Private S3 Bucket: All public access to the S3 bucket is blocked. The bucket is not accessible via a URL.
+### **Amazon S3**
+- Stores static assets (HTML, CSS, JavaScript, images)
+- Bucket is **private** (no public access)
 
-Origin Access Control (OAC): A specialized AWS security principal that allows CloudFront to authenticate with S3.
+### **Amazon CloudFront**
+- Acts as a CDN
+- Caches content at global edge locations
+- Handles HTTPS and SSL termination
 
-S3 Bucket Policy: A JSON policy was applied to the bucket that explicitly allows only my CloudFront distribution’s ARN to perform s3:GetObject actions.
+### **AWS IAM – Origin Access Control (OAC)**
+- Allows CloudFront to securely access the private S3 bucket
+- Replaces the older OAI mechanism
 
-Encrypted Transit: Configured "Redirect HTTP to HTTPS" to ensure all data is encrypted.
+### **Amazon Route 53 (Optional)**
+- DNS management
+- Custom domain mapping
 
-🚀 Implementation Steps
-S3 Configuration: Created a bucket with unique naming and disabled all public access. Uploaded the portfolio source code.
+### **AWS Certificate Manager (Optional)**
+- Provides SSL/TLS certificates for HTTPS
 
-CDN Setup: Configured a CloudFront distribution with the S3 bucket as the origin.
+---
 
-OAC Deployment: Created a new Origin Access Control setting and attached the generated policy to the S3 bucket.
+## 🔒 Security Implementation
 
-Error Handling: Created custom error responses (403/404) pointing to error.html to improve user experience.
+This project follows the **Least Privilege Principle**:
 
-Cache Optimization: Configured a default root object (index.html) to ensure the home page loads at the base URL.
+- **Private S3 Bucket**
+  - All public access is blocked
+  - Bucket cannot be accessed directly via URL
 
-📈 Performance & Cost Optimization
-Performance: By using CloudFront, the Time to First Byte (TTFB) was reduced significantly as content is served from the nearest AWS Edge Location.
+- **Origin Access Control (OAC)**
+  - CloudFront signs requests before accessing S3
 
-Cost: Leveraging the AWS Free Tier, this architecture costs nearly $0/month. S3 storage (under 5GB) and CloudFront data transfer (under 1TB) are covered, making this a highly cost-efficient professional solution.
+- **S3 Bucket Policy**
+  - Allows `s3:GetObject` **only** from the CloudFront distribution ARN
 
-🧠 Challenges & Learnings
-Challenge: Encountered a 403 Access Denied error when first accessing the CloudFront URL.
+- **Encrypted Transit**
+  - HTTP traffic is automatically redirected to HTTPS
 
-Solution: Identified that the "Default Root Object" was not set. CloudFront didn't know which file to serve at the root level. Manually setting it to index.html resolved the issue.
+---
 
-Learning: Gained a deep understanding of IAM Policies and how different AWS services communicate securely through Service Principals.
+## 🚀 Implementation Steps
 
-🔗 Live Website
-Deployment URL: https://your-unique-id.cloudfront.net
+1. **S3 Configuration**
+   - Created a uniquely named bucket
+   - Disabled all public access
+   - Uploaded static website files
 
-GitHub Repository: https://github.com/your-username/your-repo-name
+2. **CloudFront Setup**
+   - Created a distribution
+   - Configured S3 as the origin
 
-💬 Interview Questions Covered
-Why use CloudFront instead of just S3 Web Hosting? (Answer: Security, HTTPS support, and Global Latency reduction).
+3. **OAC Deployment**
+   - Created an Origin Access Control
+   - Attached generated bucket policy
 
-How does OAC differ from OAI? (Answer: OAC is the newer standard supporting more security features like SSE-KMS).
+4. **Error Handling**
+   - Configured custom 403 and 404 pages (`error.html`)
 
-How do you update the site without waiting for the cache to expire? (Answer: By creating a CloudFront Invalidation).
+5. **Cache Optimization**
+   - Set `index.html` as the default root object
 
-🔮 Future Enhancements
-[ ] CI/CD Pipeline: Automating deployments using GitHub Actions.
+---
 
-[ ] Security Headers: Using CloudFront Functions to add security headers like HSTS and XSS-Protection.
+## 📈 Performance & Cost Optimization
 
-[ ] CloudWatch Monitoring: Setting up billing alarms and traffic monitoring.
+### **Performance**
+- Reduced **Time to First Byte (TTFB)**
+- Content served from nearest AWS Edge Location
 
+### **Cost**
+- Runs almost **$0/month** under AWS Free Tier
+- S3 (<5GB) + CloudFront (<1TB transfer)
 
+---
+
+## 🧠 Challenges & Learnings
+
+### **Issue**
+- Encountered `403 Access Denied` on CloudFront URL
+
+### **Root Cause**
+- Default Root Object was not configured
+
+### **Fix**
+- Set `index.html` as Default Root Object
+
+### **Key Learning**
+- Deep understanding of IAM policies and service-to-service authentication
+
+---
+
+## 🔗 Live Website
+
+- **CloudFront URL**:  
+  https://your-unique-id.cloudfront.net
+
+- **GitHub Repository**:  
+  https://github.com/your-username/your-repo-name
+
+---
+
+## 💬 Interview Questions Covered
+
+**Why CloudFront instead of S3 Web Hosting?**  
+- Better security, HTTPS support, and global low latency
+
+**OAC vs OAI?**  
+- OAC is the modern approach with improved security and flexibility
+
+**How to update content instantly?**  
+- Use **CloudFront Cache Invalidation**
+
+---
+
+## 🔮 Future Enhancements
+
+- [ ] CI/CD Pipeline using GitHub Actions  
+- [ ] Security headers via CloudFront Functions  
+- [ ] CloudWatch monitoring & billing alarms  
+
+---
+
+### ⭐ This project reflects real-world AWS production practices and is resume & interview ready.
